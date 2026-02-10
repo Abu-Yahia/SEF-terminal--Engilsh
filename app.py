@@ -1,41 +1,32 @@
 import streamlit as st
 import google.generativeai as genai
 
-# إعدادات الصفحة
-st.set_page_config(page_title="Engilsh - Free SEF Coach", page_icon="🚀")
+st.set_page_config(page_title="Engilsh AI Coach", page_icon="🎓")
+st.title("🎓 Engilsh AI: نظام SEF المجاني")
 
-st.title("🚀 Engilsh: نظام SEF المجاني")
-st.write("تعلم بذكاء باستخدام Google Gemini (بدون تكلفة)")
-
-# القائمة الجانبية
 with st.sidebar:
-    st.header("⚙️ الإعدادات المجانية")
+    st.header("🔑 إعدادات AI")
     api_key = st.text_input("أدخل مفتاح Gemini API المجاني:", type="password")
-    st.info("احصل عليه مجاناً من Google AI Studio")
 
-words_input = st.text_input("أدخل 5 كلمات لتعلمها:")
+words = st.text_input("أدخل الـ 5 كلمات اليومية:")
 
-if st.button("إنشاء الدرس مجاناً"):
+if st.button("توليد الدرس (SEF)"):
     if not api_key:
-        st.error("من فضلك أدخل مفتاح الـ API المجاني أولاً.")
+        st.error("من فضلك ضع مفتاح الـ API المجاني في القائمة الجانبية.")
     else:
         try:
-            # إعداد نموذج جوجل
             genai.configure(api_key=api_key)
-            model = genai.GenerativeModel('gemini-pro')
+            # التحديث هنا: استخدام موديل 1.5 فلاش الأسرع والمجاني
+            model = genai.GenerativeModel('gemini-1.5-flash')
             
-            with st.spinner('جاري بناء الدرس...'):
-                prompt = f"""
-                You are a professional English Coach. Create a SEF lesson for: {words_input}.
-                Format:
-                1. STUDY (S): Explanations + Past/Future sentences.
-                2. EXERCISE (E): Situational questions.
-                3. FOLLOW-UP (F): Emotional drama script (AJ Hoge style).
-                """
-                
-                response = model.generate_content(prompt)
-                st.success("تم التجهيز!")
-                st.markdown(response.text)
-                
+            prompt = f"""
+            Create a SEF lesson for these words: {words}. 
+            1. STUDY (S): Explanations + Past/Future sentences.
+            2. EXERCISE (E): Situational questions.
+            3. FOLLOW-UP (F): Emotional drama script (AJ Hoge style).
+            """
+            
+            response = model.generate_content(prompt)
+            st.markdown(response.text)
         except Exception as e:
-            st.error(f"حدث خطأ: {e}")
+            st.error(f"خطأ في الاتصال: {e}")
